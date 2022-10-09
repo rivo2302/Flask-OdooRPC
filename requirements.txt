@@ -1,2 +1,2 @@
-odoorpc
 flask
+marshmallow
