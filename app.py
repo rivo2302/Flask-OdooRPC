@@ -1,7 +1,13 @@
-from flask import Flask, jsonify
-from os import environ as env
-from api.ressources import product
+from flask import Flask, Response
+from api.ressources import product, category
 
 
 app = Flask(__name__)
 app.register_blueprint(product)
+app.register_blueprint(category)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    """Page not found."""
+    return Response("Not found sorry", status=404)

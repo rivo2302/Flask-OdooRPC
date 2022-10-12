@@ -16,7 +16,7 @@ class RPC:
             self.conf["DB"], self.conf["USER"], self.conf["PASSWORD"], {}
         )
 
-    def execute(self, model, method, *args):
+    def execute(self, model, method, args, attrs):
         if not self.login():
             return False
         return xmlrpc.client.ServerProxy(
@@ -28,4 +28,5 @@ class RPC:
             model,
             method,
             args,
+            attrs,
         )

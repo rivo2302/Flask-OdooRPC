@@ -1,34 +1,41 @@
 from flask import Blueprint, Response
-from retry import retry
 from utils.rpc import RPC
-from os import abort, environ as env
 import json
+from config import ODOO
 
-odoo = {
-    "HOST": env.get("ODOO_HOST"),
-    "PORT": env.get("ODOO_PORT"),
-    "DB": env.get("ODOO_DB"),
-    "USER": env.get("ODOO_USER"),
-    "PASSWORD": env.get("ODOO_PASSWORD"),
-}
-rpc = RPC(odoo)
-
+rpc = RPC(ODOO)
 product = Blueprint("product", __name__)
 
 
 @product.route("/product", methods=["POST"])
-def get_product_product():
+def get_list_product():
     products = rpc.execute(
         "product.template",
         "search_read",
         [],
-        ["name", "list_price", "description"],
+        {"fields": ["name", "categ_id", "description"]},
     )
     if products:
         for product in products:
             product[
                 "image"
-            ] = f"{odoo['HOST']}/web/image/product.template/{product['id']}/image_1920"
-            movies = json.dumps(products)
-            return Response(movies, mimetype="application/json", status=200)
-    return Response(status=404)
+            ] = f"{ODOO['HOST']}/web/image/product.template/{product['id']}/image_1920"
+            return Response(
+                json.dumps(products), mimetype="application/json", status=200
+            )
+
+
+@product.route("/product/<int:id>", methods=["POST"])
+def get_detail_product(id):
+    product = rpc.execute(
+        "product.template",
+        "search_read",
+        [[["id", "=", id]]],
+        {"fields": ["name", "categ_id", "description"], "limit": 1},
+    )
+    if product:
+        product = product[0]
+        product["image"] = f"{ODOO['HOST']}/web/image/product.template/{id}/image_1920"
+        return Response(json.dumps(product), mimetype="application/json", status=200)
+    else:
+        return Response("Error product not found", status=404)

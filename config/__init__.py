@@ -1,1 +1,1 @@
-from .conf import CONFIG
+from .conf import CONFIG, ODOO
