@@ -15,14 +15,13 @@ def get_list_category():
         [],
         {"fields": ["name"]},
     )
-    if categories:
-        for category in categories:
-            category[
-                "image"
-            ] = f"{ODOO['HOST']}/web/image/product.category/{category['id']}/image_1920"
-            return Response(
-                json.dumps(categories), mimetype="application/json", status=200
-            )
+    for category in categories:
+        category[
+            "image"
+        ] = f"{ODOO['HOST']}/web/image/product.category/{category['id']}/image_1920"
+    return Response(
+        json.dumps(categories), mimetype="application/json", status=200
+    )
 
 
 @category.route("/category/<int:id>", methods=["POST"])
@@ -31,7 +30,7 @@ def get_detail_category(id):
         "product.category",
         "search_read",
         [[["id", "=", id]]],
-        {"fields": ["name"], "limit": 1},
+        {"fields": ["name"]},
     )
     if category:
         category = category[0]
@@ -47,5 +46,4 @@ def get_detail_category(id):
         return Response(
             json.dumps(category), mimetype="application/json", status=200
         )
-    else:
-        return Response("Error product not found", status=404)
+    return Response("Error product category not found", status=404)
