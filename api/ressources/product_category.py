@@ -35,7 +35,17 @@ def get_detail_category(id):
     )
     if category:
         category = category[0]
-        category["image"] = f"{ODOO['HOST']}/web/image/product.category/{id}/image_1920"
-        return Response(json.dumps(category), mimetype="application/json", status=200)
+        category[
+            "image"
+        ] = f"{ODOO['HOST']}/web/image/product.category/{id}/image_1920"
+        category["products"] = rpc.execute(
+            "product.template",
+            "search_read",
+            [[["categ_id", "=", id]]],
+            {"fields": ["name", "description"]},
+        )
+        return Response(
+            json.dumps(category), mimetype="application/json", status=200
+        )
     else:
         return Response("Error product not found", status=404)
