@@ -2,12 +2,14 @@ from flask import Blueprint, Response
 from utils.rpc import RPC
 import json
 from config import ODOO
+from api.ressources import token_required
 
 rpc = RPC(ODOO)
 product = Blueprint("product", __name__)
 
 
 @product.route("/product", methods=["POST"])
+@token_required
 def get_list_product():
     products = rpc.execute(
         "product.template",
@@ -52,6 +54,7 @@ def get_detail_product(id):
 
 
 @product.route("/product/images/<int:id>", methods=["POST"])
+@token_required
 def get_images(id):
     product = rpc.execute(
         "product.template",

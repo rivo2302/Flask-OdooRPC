@@ -2,12 +2,14 @@ from flask import Blueprint, Response
 from utils.rpc import RPC
 import json
 from config import ODOO
+from api.ressources import token_required
 
 rpc = RPC(ODOO)
 category = Blueprint("category", __name__)
 
 
 @category.route("/category", methods=["POST"])
+@token_required
 def get_list_category():
     categories = rpc.execute(
         "product.category",
@@ -15,6 +17,7 @@ def get_list_category():
         [],
         {"fields": ["name"]},
     )
+    print("redirection")
     for category in categories:
         category[
             "image"
@@ -25,6 +28,7 @@ def get_list_category():
 
 
 @category.route("/category/<int:id>", methods=["POST"])
+@token_required
 def get_detail_category(id):
     category = rpc.execute(
         "product.category",
