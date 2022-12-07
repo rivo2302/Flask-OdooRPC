@@ -1,5 +1,6 @@
 from flask import Blueprint, Response
 from utils.rpc import RPC
+from utils.tools import drop_false
 import json
 from config import ODOO
 from api.ressources import token_required
@@ -14,28 +15,41 @@ def get_list_product():
     products = rpc.execute(
         "product.template",
         "search_read",
-        [[["active", "=", True], ["sale_ok", "=", True]]],
-        {"fields": ["name", "categ_id", "description"]},
+        [
+            [
+                ["active", "=", True],
+                ["sale_ok", "=", True],
+                ["detailed_type", "=", "product"],
+            ]
+        ],
+        {"fields": ["name", "categ_id", "image_url", "description"]},
     )
-    for product in products:
-        product[
-            "image"
-        ] = f"{ODOO['HOST']}/web/image/product.template/{product['id']}/image_1920"
+    products = drop_false(products)
     return Response(
         json.dumps(products), mimetype="application/json", status=200
     )
 
 
 @product.route("/product/<int:id>", methods=["POST"])
+@token_required
 def get_detail_product(id):
     product = rpc.execute(
         "product.template",
         "search_read",
-        [[["id", "=", id]]],
+        [
+            [
+                ["id", "=", id],
+                ["active", "=", True],
+                ["sale_ok", "=", True],
+                ["detailed_type", "=", "product"],
+            ]
+        ],
         {
             "fields": [
                 "name",
                 "categ_id",
+                "image_url",
+                "qty_available",
                 "list_price",
                 "default_code",
                 "description",
@@ -43,12 +57,10 @@ def get_detail_product(id):
         },
     )
     if product:
-        product = product[0]
-        product[
-            "image"
-        ] = f"{ODOO['HOST']}/web/image/product.template/{id}/image_1920"
+        product = drop_false(product)
+        # return only the first product
         return Response(
-            json.dumps(product), mimetype="application/json", status=200
+            json.dumps(product[0]), mimetype="application/json", status=200
         )
     return Response("Error product not found", status=404)
 
@@ -59,7 +71,14 @@ def get_images(id):
     product = rpc.execute(
         "product.template",
         "search_read",
-        [[["id", "=", id]]],
+        [
+            [
+                ["id", "=", id],
+                ["active", "=", True],
+                ["sale_ok", "=", True],
+                ["detailed_type", "=", "product"],
+            ]
+        ],
         {"fields": ["pictures_ids"]},
     )
     if product:
@@ -73,6 +92,7 @@ def get_images(id):
             image[
                 "url"
             ] = f"{ODOO['HOST']}/web/image/ir.attachment/{image['id']}/datas"
+        images = drop_false(images)
         return Response(
             json.dumps(images), mimetype="application/json", status=200
         )

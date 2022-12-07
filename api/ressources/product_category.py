@@ -1,5 +1,6 @@
 from flask import Blueprint, Response
 from utils.rpc import RPC
+from utils.tools import drop_false
 import json
 from config import ODOO
 from api.ressources import token_required
@@ -17,11 +18,11 @@ def get_list_category():
         [],
         {"fields": ["name"]},
     )
-    print("redirection")
     for category in categories:
         category[
             "image"
         ] = f"{ODOO['HOST']}/web/image/product.category/{category['id']}/image_1920"
+    categories = drop_false(categories)
     return Response(
         json.dumps(categories), mimetype="application/json", status=200
     )
@@ -47,6 +48,7 @@ def get_detail_category(id):
             [[["categ_id", "=", id]]],
             {"fields": ["name", "description"]},
         )
+        category = drop_false(category)
         return Response(
             json.dumps(category), mimetype="application/json", status=200
         )
