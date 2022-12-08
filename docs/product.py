@@ -1,6 +1,6 @@
 list_specs = {
-    "tags": ["Category"],
-    "description": "Get list of category items",
+    "tags": ["Product"],
+    "description": "Get list of product items",
     "parameters": [
         {
             "in": "header",
@@ -10,12 +10,16 @@ list_specs = {
         }
     ],
     "definitions": {
-        "Category": {
+        "product": {
             "type": "object",
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
-                "image": {"type": "string"},
+                "description": {"type": "string"},
+                "category_id": {"type": "integer"},
+                "img_url": {"type": "string"},
+                "qty_available": {"type": "integer"},
+                "default_code": {"type": "string"},
             },
         }
     },
@@ -24,7 +28,7 @@ list_specs = {
             "description": " A list of categories items",
             "schema": {
                 "type": "array",
-                "items": {"$ref": "#/definitions/Category"},
+                "items": {"$ref": "#/definitions/product"},
             },
         },
         401: {
@@ -42,8 +46,8 @@ list_specs = {
 }
 
 detailed_specs = {
-    "tags": ["Category"],
-    "description": "Get detailed category item",
+    "tags": ["Product"],
+    "description": "Get detailed product item",
     "parameters": [
         {
             "in": "header",
@@ -59,19 +63,23 @@ detailed_specs = {
         },
     ],
     "definitions": {
-        "Category": {
+        "product": {
             "type": "object",
             "properties": {
                 "id": {"type": "integer"},
                 "name": {"type": "string"},
                 "description": {"type": "string"},
+                "category_id": {"type": "integer"},
+                "img_url": {"type": "string"},
+                "qty_available": {"type": "integer"},
+                "default_code": {"type": "string"},
             },
         },
     },
     "responses": {
         200: {
-            "description": "A category item",
-            "schema": {"$ref": "#/definitions/Category"},
+            "description": "A product item",
+            "schema": {"$ref": "#/definitions/product"},
         },
         401: {
             "description": "Unauthorized",
@@ -85,7 +93,7 @@ detailed_specs = {
             },
         },
         404: {
-            "description": "Category not found",
+            "description": "Product not found",
             "schema": {
                 "type": "object",
                 "properties": {

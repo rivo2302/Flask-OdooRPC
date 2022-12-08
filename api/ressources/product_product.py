@@ -4,6 +4,8 @@ from utils.tools import drop_false
 import json
 from config import ODOO
 from api.ressources import token_required
+from flasgger.utils import swag_from
+from docs.product import list_specs, detailed_specs
 
 rpc = RPC(ODOO)
 product = Blueprint("product", __name__, url_prefix="/product")
@@ -11,6 +13,7 @@ product = Blueprint("product", __name__, url_prefix="/product")
 
 @product.route("/", methods=["GET"])
 @token_required
+@swag_from(list_specs, methods=["GET"])
 def get_list_product():
     products = rpc.execute(
         "product.template",
@@ -42,6 +45,7 @@ def get_list_product():
 
 @product.route("/<int:id>", methods=["GET"])
 @token_required
+@swag_from(detailed_specs, methods=["GET"])
 def get_detail_product(id):
     product = rpc.execute(
         "product.template",
@@ -75,7 +79,7 @@ def get_detail_product(id):
     return Response("Error product not found", status=404)
 
 
-@product.route("/product/images/<int:id>", methods=["POST"])
+@product.route("/product/images/<int:id>", methods=["GET"])
 @token_required
 def get_images(id):
     product = rpc.execute(
@@ -106,4 +110,4 @@ def get_images(id):
         return Response(
             json.dumps(images), mimetype="application/json", status=200
         )
-    return Response("Error product not found", status=404)
+    return Response(json.dumps("Error product not found"), status=404)
