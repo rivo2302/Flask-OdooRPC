@@ -22,7 +22,17 @@ def get_list_product():
                 ["detailed_type", "=", "product"],
             ]
         ],
-        {"fields": ["name", "categ_id", "image_url", "description"]},
+        {
+            "fields": [
+                "name",
+                "categ_id",
+                "image_url",
+                "qty_available",
+                "list_price",
+                "default_code",
+                "description",
+            ]
+        },
     )
     products = drop_false(products)
     return Response(

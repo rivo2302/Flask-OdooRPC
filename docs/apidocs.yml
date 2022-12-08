@@ -1,0 +1,39 @@
+This file contains the category resource definition.
+It is for the category resource.
+It returns the list of categories.
+---
+/category:
+    get:
+        tags:
+        - category
+        definitions:
+            Category:
+                type: object
+                properties:
+                id:
+                    type: integer
+                name:
+                    type: string
+                image:
+                    type: string
+        responses:
+        200:
+            description: A list of categories
+            schema:
+                type: array
+                items:
+                    $ref: '#/definitions/Category'
+            examples:
+                application/json:
+                    [
+                        {
+                            "id": 1,
+                            "name": "Category 1",
+                            "image": "http://localhost:8000/uploads/images/1.jpg"
+                        },
+                        {
+                            "id": 2,
+                            "name": "Category 2",
+                            "image": "http://localhost:8000/uploads/images/2.jpg"
+                        }
+                    ]
