@@ -6,10 +6,10 @@ from config import ODOO
 from api.ressources import token_required
 
 rpc = RPC(ODOO)
-category = Blueprint("category", __name__)
+category = Blueprint("category", __name__, url_prefix="/category")
 
 
-@category.route("/category", methods=["POST"])
+@category.route("/", methods=["GET"])
 @token_required
 def get_list_category():
     categories = rpc.execute(
@@ -28,7 +28,7 @@ def get_list_category():
     )
 
 
-@category.route("/category/<int:id>", methods=["POST"])
+@category.route("/<int:id>", methods=["GET"])
 @token_required
 def get_detail_category(id):
     category = rpc.execute(

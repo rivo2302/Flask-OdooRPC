@@ -6,10 +6,10 @@ from config import ODOO
 from api.ressources import token_required
 
 rpc = RPC(ODOO)
-product = Blueprint("product", __name__)
+product = Blueprint("product", __name__, url_prefix="/product")
 
 
-@product.route("/product", methods=["POST"])
+@product.route("/", methods=["GET"])
 @token_required
 def get_list_product():
     products = rpc.execute(
@@ -30,7 +30,7 @@ def get_list_product():
     )
 
 
-@product.route("/product/<int:id>", methods=["POST"])
+@product.route("/<int:id>", methods=["GET"])
 @token_required
 def get_detail_product(id):
     product = rpc.execute(

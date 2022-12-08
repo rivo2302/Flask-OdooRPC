@@ -19,10 +19,10 @@ class Partner(BaseModel):
 
 
 rpc = RPC(ODOO)
-partner = Blueprint("partner", __name__)
+partner = Blueprint("partner", __name__, url_prefix="/partner")
 
 
-@partner.route("/partner", methods=["POST"])
+@partner.route("/", methods=["POST"])
 @token_required
 @validate()
 def create(body: Partner):
