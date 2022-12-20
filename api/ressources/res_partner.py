@@ -1,4 +1,4 @@
-from flask import Blueprint, Response
+from flask import Blueprint, Response, request
 from utils.rpc import RPC
 from utils.tools import drop_false
 import json
@@ -83,9 +83,8 @@ def get_detail_partner(id):
 @token_required
 @validate()
 def create(body: Partner):
-    print("here")
     res = rpc.execute("res.partner", "create", [body.dict()], [])
-    if partner:
+    if res:
         return Response(
             json.dumps({"id": res}),
             mimetype="application/json",

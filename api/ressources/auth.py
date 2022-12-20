@@ -12,10 +12,10 @@ def token_required(f):
             token = request.headers["access-token"]
         if not token:  # throw error if no token provided
             return make_response(
-                jsonify({"message": "A valid token is missing!"}), 401
+                jsonify({"message": "A valid access-token is missing!"}), 401
             )
         if token == env.get("TOKEN"):
             return f(*args, **kwargs)
-        return make_response(jsonify({"message": "invalid token"}), 401)
+        return make_response(jsonify({"message": "invalid access-token"}), 401)
 
     return decorator

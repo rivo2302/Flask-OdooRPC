@@ -17,7 +17,7 @@ class RPC:
             self.conf["DB"], self.conf["USER"], self.conf["PASSWORD"], {}
         )
 
-    def execute(self, model, method, args, attrs):
+    def execute(self, model, method, args, attrs={}):
         # First, we need to connect to the database.
         if not self.login():
             return False
@@ -33,4 +33,7 @@ class RPC:
             method,
             args,
             attrs,
+        )
+        models.execute_kw(
+            db, uid, password, "res.partner", "custom_function", [arg]
         )

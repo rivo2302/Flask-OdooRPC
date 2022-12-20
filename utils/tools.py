@@ -1,9 +1,20 @@
-def drop_false(element):
-    """Drop False values from a list or tuple or dict."""
-    if type(element) in (list, tuple):
-        return type(element)(drop_false(e) for e in element if e)
-
-    for key, value in element.items():
-        if value is False:
-            element[key] = str("")
-    return element
+def drop_false(obj):
+    if isinstance(obj, dict):
+        # Si l'objet est un dictionnaire, parcourez les clés et les valeurs
+        for key, value in obj.items():
+            # Si la valeur est "False", remplacez-la par une chaîne vide
+            if value is False or value == "false":
+                obj[key] = ""
+            # Si la valeur est un autre objet itérable (liste, dictionnaire, etc.), appelez la fonction récursivement sur cet objet
+            elif isinstance(value, (list, dict)):
+                drop_false(value)
+    elif isinstance(obj, list):
+        # Si l'objet est une liste, parcourez chaque élément de la liste
+        for i in range(len(obj)):
+            # Si l'élément est "False", remplacez-le par une chaîne vide
+            if obj[i] is False or obj[i] == "false":
+                obj[i] = ""
+            # Si l'élément est un autre objet itérable (liste, dictionnaire, etc.), appelez la fonction récursivement sur cet objet
+            elif isinstance(obj[i], (list, dict)):
+                drop_false(obj[i])
+    return obj

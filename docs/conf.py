@@ -22,3 +22,4 @@ template = {
     "produces": ["application/json"],
     "consumes": ["application/json"],
 }
+
