@@ -5,7 +5,6 @@ import json
 from pydantic import BaseModel
 from typing import Optional, List
 from config import ODOO
-from api.ressources import token_required
 from flasgger.utils import swag_from
 from flask_pydantic import validate
 
@@ -26,7 +25,6 @@ class SaleOrder(BaseModel):
 
 
 @sale.route("/", methods=["GET"])
-@token_required
 def list_sale():
     # By default the filter is empty so we will get all the sales in sale state but if there is partner_id in the request we will filter the sales by the partner_id
     filter = [
@@ -99,7 +97,6 @@ def list_sale():
 
 
 @sale.route("/", methods=["POST"])
-@token_required
 @validate()
 def create(body: SaleOrder):
 

@@ -3,7 +3,6 @@ from utils.rpc import RPC
 from utils.tools import drop_false
 import json
 from config import ODOO
-from api.ressources import token_required
 from pydantic import BaseModel
 from typing import Optional
 from flask_pydantic import validate
@@ -24,7 +23,6 @@ partner = Blueprint("partner", __name__, url_prefix="/partner")
 
 
 @partner.route("/", methods=["GET"])
-@token_required
 def get_list_partner():
     partners = rpc.execute(
         "res.partner",
@@ -51,7 +49,6 @@ def get_list_partner():
 
 
 @partner.route("/<int:id>", methods=["GET"])
-@token_required
 def get_detail_partner(id):
     partner = rpc.execute(
         "res.partner",
@@ -80,7 +77,6 @@ def get_detail_partner(id):
 
 
 @partner.route("/", methods=["POST"])
-@token_required
 @validate()
 def create(body: Partner):
     res = rpc.execute("res.partner", "create", [body.dict()], [])

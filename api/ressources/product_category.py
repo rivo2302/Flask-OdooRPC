@@ -3,7 +3,6 @@ from utils.rpc import RPC
 from utils.tools import drop_false
 import json
 from config import ODOO
-from api.ressources import token_required
 from flasgger.utils import swag_from
 from docs.category import list_specs, detailed_specs
 
@@ -12,7 +11,6 @@ category = Blueprint("category", __name__, url_prefix="/category")
 
 
 @category.route("/", methods=["GET"])
-@token_required
 @swag_from(list_specs, methods=["GET"])
 def get_list_category():
     """Get list of product category."""
@@ -33,7 +31,6 @@ def get_list_category():
 
 
 @category.route("/<int:id>", methods=["GET"])
-@token_required
 @swag_from(detailed_specs, methods=["GET"])
 def get_detail_category(id):
     category = rpc.execute(
