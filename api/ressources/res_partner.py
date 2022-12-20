@@ -15,14 +15,13 @@ class Partner(BaseModel):
     email: Optional[str]
     street: Optional[str]  # addresse
     website: Optional[str]
-    # id user in amp
 
 
 rpc = RPC(ODOO)
 partner = Blueprint("partner", __name__, url_prefix="/partner")
 
 
-@partner.route("/", methods=["GET"])
+@partner.route("/", methods=["GET"],strict_slashes=False)
 def get_list_partner():
     partners = rpc.execute(
         "res.partner",
@@ -48,7 +47,7 @@ def get_list_partner():
     )
 
 
-@partner.route("/<int:id>", methods=["GET"])
+@partner.route("/<int:id>", methods=["GET"],strict_slashes=False)
 def get_detail_partner(id):
     partner = rpc.execute(
         "res.partner",
@@ -76,7 +75,7 @@ def get_detail_partner(id):
     return Response("Error partner not found", status=404)
 
 
-@partner.route("/", methods=["POST"])
+@partner.route("/", methods=["POST"],strict_slashes=False)
 @validate()
 def create(body: Partner):
     res = rpc.execute("res.partner", "create", [body.dict()], [])

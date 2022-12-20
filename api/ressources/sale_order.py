@@ -24,12 +24,19 @@ class SaleOrder(BaseModel):
     order_line: List[SaleOrderLine]
 
 
-@sale.route("/", methods=["GET"])
+@sale.route("/", methods=["GET"],strict_slashes=False)
 def list_sale():
-    # By default the filter is empty so we will get all the sales in sale state but if there is partner_id in the request we will filter the sales by the partner_id
+    """
+    By default the filter is only all sale order that state is in sale
+    so we will get all the 
+    sales in sale state but if there is partner_id in the
+    request we will filter the sales by the partner_id
+    """
     filter = [
         ["state", "=", "sale"],
     ]
+
+    # Get the partner_id from the request , if true add it to the filter
     partner_id_param = request.args.get("partner_id")
     if partner_id_param:
         if not partner_id_param.isnumeric():
@@ -80,7 +87,7 @@ def list_sale():
                 [[["id", "in", sale["order_line"]]]],
                 {"fields": ["product_id", "product_uom_qty", "price_unit"]},
             )
-            sale["order_line"] = order_lines
+            sale["order_line"] = order_lines if order_lines else []
         if sale["picking_ids"]:
             pickings = rpc.execute(
                 "stock.picking",
@@ -88,15 +95,13 @@ def list_sale():
                 [[["id", "in", sale["picking_ids"]]]],
                 {"fields": ["name", "state"]},
             )
-            sale["picking_ids"] = pickings
-
-        # We have to get to the picking_ids of the sale order and get the state of the picking
-
+            sale["picking_ids"] = pickings if pickings else []
+            
     sales = drop_false(sales)
     return Response(json.dumps(sales), mimetype="application/json", status=200)
 
 
-@sale.route("/", methods=["POST"])
+@sale.route("/", methods=["POST"],strict_slashes=False)
 @validate()
 def create(body: SaleOrder):
 

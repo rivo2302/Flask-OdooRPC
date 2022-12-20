@@ -19,7 +19,7 @@ the payment state will be paid
 """
 
 
-@account.route("/", methods=["POST"])
+@account.route("/", methods=["POST"],strict_slashes=False)
 def create_account_move():
     # Get the id of the sale order from the request
 

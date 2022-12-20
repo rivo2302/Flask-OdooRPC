@@ -10,7 +10,7 @@ rpc = RPC(ODOO)
 category = Blueprint("category", __name__, url_prefix="/category")
 
 
-@category.route("/", methods=["GET"])
+@category.route("/", methods=["GET"],strict_slashes=False)
 @swag_from(list_specs, methods=["GET"])
 def get_list_category():
     """Get list of product category."""
@@ -30,7 +30,7 @@ def get_list_category():
     )
 
 
-@category.route("/<int:id>", methods=["GET"])
+@category.route("/<int:id>", methods=["GET"],strict_slashes=False)
 @swag_from(detailed_specs, methods=["GET"])
 def get_detail_category(id):
     category = rpc.execute(
