@@ -19,7 +19,7 @@ the payment state will be paid
 """
 
 
-@account.route("/", methods=["POST"],strict_slashes=False)
+@account.route("/", methods=["POST"])
 def create_account_move():
     # Get the id of the sale order from the request
 
@@ -45,7 +45,10 @@ def create_account_move():
             status=400,
         )
     sale_order = sale_order[0]
-    res = rpc.execute("sale.advance.payment.inv", "_create_invoice", [sale_order_id, {}, {}])
+
+    res = rpc.execute(
+        "sale.advance.payment.inv", "_create_invoice", [sale_order_id, {}, {}]
+    )
     return Response(
         json.dumps({"id": res}), mimetype="application/json", status=200
     )

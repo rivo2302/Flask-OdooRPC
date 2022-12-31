@@ -21,7 +21,7 @@ rpc = RPC(ODOO)
 partner = Blueprint("partner", __name__, url_prefix="/partner")
 
 
-@partner.route("/", methods=["GET"],strict_slashes=False)
+@partner.route("/", methods=["GET"])
 def get_list_partner():
     partners = rpc.execute(
         "res.partner",
@@ -47,7 +47,7 @@ def get_list_partner():
     )
 
 
-@partner.route("/<int:id>", methods=["GET"],strict_slashes=False)
+@partner.route("/<int:id>", methods=["GET"])
 def get_detail_partner(id):
     partner = rpc.execute(
         "res.partner",
@@ -69,13 +69,14 @@ def get_detail_partner(id):
         },
     )
     if partner:
+        partner = drop_false(partner)
         return Response(
             json.dumps(partner[0]), mimetype="application/json", status=200
         )
     return Response("Error partner not found", status=404)
 
 
-@partner.route("/", methods=["POST"],strict_slashes=False)
+@partner.route("/", methods=["POST"])
 @validate()
 def create(body: Partner):
     res = rpc.execute("res.partner", "create", [body.dict()], [])

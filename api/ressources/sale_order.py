@@ -24,11 +24,11 @@ class SaleOrder(BaseModel):
     order_line: List[SaleOrderLine]
 
 
-@sale.route("/", methods=["GET"],strict_slashes=False)
+@sale.route("/", methods=["GET"])
 def list_sale():
     """
     By default the filter is only all sale order that state is in sale
-    so we will get all the 
+    so we will get all the
     sales in sale state but if there is partner_id in the
     request we will filter the sales by the partner_id
     """
@@ -96,12 +96,12 @@ def list_sale():
                 {"fields": ["name", "state"]},
             )
             sale["picking_ids"] = pickings if pickings else []
-            
+
     sales = drop_false(sales)
     return Response(json.dumps(sales), mimetype="application/json", status=200)
 
 
-@sale.route("/", methods=["POST"],strict_slashes=False)
+@sale.route("/", methods=["POST"])
 @validate()
 def create(body: SaleOrder):
 
