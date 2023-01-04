@@ -28,6 +28,9 @@ def not_found(error):
 # Check token befor any request , the token is set in the .env file
 @app.before_request
 def header_required():
+    # Allow access to swagger
+    if request.path == '/apidocs/' or "flasgger" or "apispec" in request.path:
+        return
     if 'access-token' not in request.headers:
         return jsonify({'error': 'A valid access-token is missing'}), 403
     token = request.headers['access-token']
