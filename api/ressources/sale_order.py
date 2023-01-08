@@ -101,6 +101,73 @@ def list_sale():
     return Response(json.dumps(sales), mimetype="application/json", status=200)
 
 
+@sale.route("/<int:id>", methods=["GET"])
+def get_sale_order(id):
+    sale = rpc.execute(
+        "sale.order",
+        "search_read",
+        [
+            [
+                ["id", "=", id],
+            ]
+        ],
+        {
+            "fields": [
+                "name",
+                "partner_id",
+                "partner_shipping_id",
+                "date_order",
+                "order_line",
+                "amount_total",
+                "picking_ids",
+            ],
+            "limit": 1,
+        },
+    )
+    if not sale:
+        return Response(
+            json.dumps({"error": "Sale order not found"}),
+            mimetype="application/json",
+            status=404,
+        )
+    sale = sale[0]
+    if sale["partner_id"]:
+        partner = rpc.execute(
+            "res.partner",
+            "search_read",
+            [[["id", "=", sale["partner_id"][0]]]],
+            {"fields": ["name", "phone", "mobile", "email"]},
+        )
+        sale["partner_id"] = partner[0] if partner else {}
+    if sale["partner_shipping_id"]:
+        shipping = rpc.execute(
+            "res.partner",
+            "search_read",
+            [[["id", "=", sale["partner_shipping_id"][0]]]],
+            {"fields": ["name", "phone", "mobile", "email"]},
+        )
+        sale["partner_shipping_id"] = shipping[0] if shipping else {}
+    if sale["order_line"]:
+        order_lines = rpc.execute(
+            "sale.order.line",
+            "search_read",
+            [[["id", "in", sale["order_line"]]]],
+            {"fields": ["product_id", "product_uom_qty", "price_unit"]},
+        )
+        sale["order_line"] = order_lines if order_lines else []
+    if sale["picking_ids"]:
+        pickings = rpc.execute(
+            "stock.picking",
+            "search_read",
+            [[["id", "in", sale["picking_ids"]]]],
+            {"fields": ["name", "state"]},
+        )
+        sale["picking_ids"] = pickings if pickings else []
+
+    sale = drop_false(sale)
+    return Response(json.dumps(sale), mimetype="application/json", status=200)
+
+
 @sale.route("/", methods=["POST"])
 @validate()
 def create(body: SaleOrder):
