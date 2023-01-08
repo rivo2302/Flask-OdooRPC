@@ -78,6 +78,17 @@ def get_detail_partner(id):
     return Response("Error partner not found", status=404)
 
 
+@partner.route("/<int:id>", methods=["PUT"])
+def modify_partner(id):
+    body = request.get_json()
+    if body:
+        res = rpc.execute("res.partner", "write", [[id], body])
+        if res:
+            return Response("Partner modified", status=200)
+        return Response("Error partner not modified", status=500)
+    return Response("Error body not found", status=400)
+
+
 @partner.route("/", methods=["POST"])
 @validate()
 def create(body: Partner):
