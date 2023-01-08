@@ -2,4 +2,3 @@ flask
 gunicorn
 pydantic
 flask_pydantic
-flasgger

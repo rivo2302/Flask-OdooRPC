@@ -1,7 +1,5 @@
-from flask import Flask, Response,request,jsonify
-from flasgger import Swagger
+from flask import Flask, Response, request, jsonify
 from api.ressources import product, category, partner, sale, account
-from docs import template
 from os import environ as env
 
 
@@ -15,9 +13,6 @@ app.register_blueprint(sale)
 app.register_blueprint(account)
 
 
-# Install swagger
-swagger = Swagger(app, template=template)
-
 # Error handler
 @app.errorhandler(404)
 def not_found(error):
@@ -28,14 +23,9 @@ def not_found(error):
 # Check token befor any request , the token is set in the .env file
 @app.before_request
 def header_required():
-    # Allow access to swagger
-    if request.path == '/apidocs/' or "flasgger" or "apispec" in request.path:
-        return
-    if 'access-token' not in request.headers:
-        return jsonify({'error': 'A valid access-token is missing'}), 403
-    token = request.headers['access-token']
-    if token != env.get('TOKEN'):
-        return jsonify({'error': 'Invalid access-token'}), 403
 
-    
-    
+    if "access-token" not in request.headers:
+        return jsonify({"error": "A valid access-token is missing"}), 403
+    token = request.headers["access-token"]
+    if token != env.get("TOKEN"):
+        return jsonify({"error": "Invalid access-token"}), 403

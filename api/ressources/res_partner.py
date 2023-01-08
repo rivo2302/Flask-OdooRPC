@@ -1,4 +1,4 @@
-from flask import Blueprint, Response, request
+from flask import Blueprint, Response
 from utils.rpc import RPC
 from utils.tools import drop_false
 import json
