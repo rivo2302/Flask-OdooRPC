@@ -4,7 +4,6 @@ import xmlrpc.client
 class RPC:
     def __init__(self, conf) -> None:
         self.conf = conf
-        pass
 
     def common(self):
         return xmlrpc.client.ServerProxy(
