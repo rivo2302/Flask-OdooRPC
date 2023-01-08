@@ -1,5 +1,5 @@
 from flask import Flask, Response, request, jsonify
-from api.ressources import product, category, partner, sale, account
+from api.ressources import product, category, partner, sale
 from os import environ as env
 
 app = Flask(__name__)
@@ -9,7 +9,6 @@ app.register_blueprint(product)
 app.register_blueprint(category)
 app.register_blueprint(partner)
 app.register_blueprint(sale)
-app.register_blueprint(account)
 
 
 # Error handler
