@@ -10,7 +10,7 @@ from flask_pydantic import validate
 
 class Partner(BaseModel):
     name: str
-    amp_user_id: Optional[str]
+    amp_user_facebook_id: Optional[str]
     phone: Optional[str]
     email: Optional[str]
     street: Optional[str]  # addresse
@@ -61,6 +61,7 @@ def get_detail_partner(id):
         {
             "fields": [
                 "name",
+                "amp_user_facebook_id",
                 "phone",
                 "email",
                 "street",
@@ -79,7 +80,40 @@ def get_detail_partner(id):
 @partner.route("/", methods=["POST"])
 @validate()
 def create(body: Partner):
-    res = rpc.execute("res.partner", "create", [body.dict()], [])
+    # add amp_user_id if amp_user_facebook_id is in body
+    body = body.dict()
+    if "amp_user_facebook_id" in body.keys():
+        print("here")
+        # get amp_user_id
+        print(body["amp_user_facebook_id"])
+        amp_user_id = rpc.execute(
+            "amp.user",
+            "search_read",
+            [
+                [
+                    [
+                        "user_id",
+                        "=",
+                        body["amp_user_facebook_id"],
+                    ],
+                ]
+            ],
+            {"limit": 1},
+        )
+        print(amp_user_id)
+        if amp_user_id:
+            del body["amp_user_facebook_id"]
+            body["amp_user_id"] = amp_user_id[0]["id"]
+            res = rpc.execute("res.partner", "create", [body])
+            if res:
+                return Response(
+                    json.dumps({"id": res}),
+                    mimetype="application/json",
+                    status=200,
+                )
+            return Response("Error partner not created", status=500)
+        return Response("Error amp_user not found", status=400)
+    res = rpc.execute("res.partner", "create", [body])
     if res:
         return Response(
             json.dumps({"id": res}),
@@ -87,3 +121,37 @@ def create(body: Partner):
             status=200,
         )
     return Response("Error partner not created", status=500)
+
+
+@partner.route("/amp_user/<string:sender_id>", methods=["GET"])
+def get_user_partner(sender_id):
+    partner = rpc.execute(
+        "res.partner",
+        "search_read",
+        [
+            [
+                [
+                    "amp_user_facebook_id",
+                    "=",
+                    sender_id,
+                ],
+            ]
+        ],
+        {
+            "fields": [
+                "name",
+                "amp_user_facebook_id",
+                "phone",
+                "email",
+                "street",
+                "website",
+            ],
+            "limit": 1,
+        },
+    )
+    if partner:
+        partner = drop_false(partner)
+        return Response(
+            json.dumps(partner[0]), mimetype="application/json", status=200
+        )
+    return Response("Error partner not found", status=404)
