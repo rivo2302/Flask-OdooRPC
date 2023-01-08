@@ -35,6 +35,7 @@ def get_list_partner():
             "fields": [
                 "name",
                 "phone",
+                "amp_user_facebook_id",
                 "email",
                 "street",
                 "website",
@@ -82,10 +83,8 @@ def get_detail_partner(id):
 def create(body: Partner):
     # add amp_user_id if amp_user_facebook_id is in body
     body = body.dict()
-    if "amp_user_facebook_id" in body.keys():
-        print("here")
+    if body.get("amp_user_facebook_id") is not None:
         # get amp_user_id
-        print(body["amp_user_facebook_id"])
         amp_user_id = rpc.execute(
             "amp.user",
             "search_read",
@@ -100,7 +99,6 @@ def create(body: Partner):
             ],
             {"limit": 1},
         )
-        print(amp_user_id)
         if amp_user_id:
             del body["amp_user_facebook_id"]
             body["amp_user_id"] = amp_user_id[0]["id"]
