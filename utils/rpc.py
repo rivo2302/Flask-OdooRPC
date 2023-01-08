@@ -34,6 +34,3 @@ class RPC:
             args,
             attrs,
         )
-        models.execute_kw(
-            db, uid, password, "res.partner", "custom_function", [arg]
-        )

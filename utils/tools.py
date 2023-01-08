@@ -5,7 +5,8 @@ def drop_false(obj):
             # Si la valeur est "False", remplacez-la par une chaîne vide
             if value is False or value == "false":
                 obj[key] = ""
-            # Si la valeur est un autre objet itérable (liste, dictionnaire, etc.), appelez la fonction récursivement sur cet objet
+            # Si la valeur est un autre objet itérable (liste, dictionnaire, etc.),
+            # appelez la fonction récursivement sur cet objet
             elif isinstance(value, (list, dict)):
                 drop_false(value)
     elif isinstance(obj, list):
@@ -14,7 +15,8 @@ def drop_false(obj):
             # Si l'élément est "False", remplacez-le par une chaîne vide
             if obj[i] is False or obj[i] == "false":
                 obj[i] = ""
-            # Si l'élément est un autre objet itérable (liste, dictionnaire, etc.), appelez la fonction récursivement sur cet objet
+            # Si l'élément est un autre objet itérable (liste, dictionnaire, etc.),
+            # appelez la fonction récursivement sur cet objet
             elif isinstance(obj[i], (list, dict)):
                 drop_false(obj[i])
     return obj
