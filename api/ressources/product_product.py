@@ -16,7 +16,7 @@ def get_list_product():
         [
             [
                 ["active", "=", True],
-                ["sale_ok", "=", True],
+                ["is_disponible_messenger", "=", True],
                 ["detailed_type", "=", "product"],
             ]
         ],
@@ -47,7 +47,7 @@ def get_detail_product(id):
             [
                 ["id", "=", id],
                 ["active", "=", True],
-                ["sale_ok", "=", True],
+                ["is_disponible_messenger", "=", True],
                 ["detailed_type", "=", "product"],
             ]
         ],
@@ -81,7 +81,7 @@ def get_images(id):
             [
                 ["id", "=", id],
                 ["active", "=", True],
-                ["sale_ok", "=", True],
+                ["is_disponible_messenger", "=", True],
                 ["detailed_type", "=", "product"],
             ]
         ],
