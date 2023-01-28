@@ -95,9 +95,7 @@ def get_images(id):
             {"fields": ["name", "description"]},
         )
         for image in images:
-            image[
-                "url"
-            ] = f"{ODOO['HOST']}/web/image/ir.attachment/{image['id']}/datas"
+            image["url"] = f"/web/image/ir.attachment/{image['id']}/datas"
         images = drop_false(images)
         return Response(
             json.dumps(images), mimetype="application/json", status=200
