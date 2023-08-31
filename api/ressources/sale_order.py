@@ -5,7 +5,6 @@ import json
 from pydantic import BaseModel
 from typing import Optional, List
 from config import ODOO
-from flasgger.utils import swag_from
 from flask_pydantic import validate
 
 rpc = RPC(ODOO)
